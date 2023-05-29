@@ -15,6 +15,7 @@ import os
 import random
 import re
 import sys
+import string
 from collections import defaultdict
 from optparse import OptionParser
 
@@ -52,27 +53,30 @@ class WAFW00F(waftoolsengine):
         return self.Request(path=self.path + str(random.randrange(100, 999)) + '.html')
 
     def xssAttack(self):
-        return self.Request(path=self.path, params= {'s': self.xsstring})
+        return self.Request(path=self.path, params={random_param(): self.xsstring})
 
     def xxeAttack(self):
-        return self.Request(path=self.path, params= {'s': self.xxestring})
+        return self.Request(path=self.path, params={random_param(): self.xxestring})
 
     def lfiAttack(self):
         return self.Request(path=self.path + self.lfistring)
 
     def centralAttack(self):
-        return self.Request(path=self.path, params={'a': self.xsstring, 'b': self.sqlistring, 'c': self.lfistring})
+        return self.Request(path=self.path, params={random_param(): self.xsstring,
+                                                    random_param(): self.sqlistring,
+                                                    random_param(): self.lfistring})
 
     def sqliAttack(self):
-        return self.Request(path=self.path, params= {'s': self.sqlistring})
+        return self.Request(path=self.path, params={random_param(): self.sqlistring})
 
     def oscAttack(self):
-        return self.Request(path=self.path, params= {'s': self.rcestring})
+        return self.Request(path=self.path, params={random_param(): self.rcestring})
 
     def performCheck(self, request_method):
         r = request_method()
         if r is None:
             raise RequestBlocked()
+        print(r.url)
         return r
 
     # Most common attacks used to detect WAFs
@@ -249,6 +253,9 @@ class WAFW00F(waftoolsengine):
                     break
         self.knowledge['wafname'] = detected
         return detected
+
+def random_param(size=6, chars=string.ascii_lowercase):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 def calclogginglevel(verbosity):
     default = 40  # errors are printed out
