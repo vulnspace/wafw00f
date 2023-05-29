@@ -53,24 +53,24 @@ class WAFW00F(waftoolsengine):
         return self.Request(path=self.path + str(random.randrange(100, 999)) + '.html')
 
     def xssAttack(self):
-        return self.Request(path=self.path, params={create_random_string(): self.xsstring})
+        return self.Request(path=self.path, params={create_random_param_name(): self.xsstring})
 
     def xxeAttack(self):
-        return self.Request(path=self.path, params={create_random_string(): self.xxestring})
+        return self.Request(path=self.path, params={create_random_param_name(): self.xxestring})
 
     def lfiAttack(self):
         return self.Request(path=self.path + self.lfistring)
 
     def centralAttack(self):
-        return self.Request(path=self.path, params={create_random_string(): self.xsstring,
-                                                    create_random_string(): self.sqlistring,
-                                                    create_random_string(): self.lfistring})
+        return self.Request(path=self.path, params={create_random_param_name(): self.xsstring,
+                                                    create_random_param_name(): self.sqlistring,
+                                                    create_random_param_name(): self.lfistring})
 
     def sqliAttack(self):
-        return self.Request(path=self.path, params={create_random_string(): self.sqlistring})
+        return self.Request(path=self.path, params={create_random_param_name(): self.sqlistring})
 
     def oscAttack(self):
-        return self.Request(path=self.path, params={create_random_string(): self.rcestring})
+        return self.Request(path=self.path, params={create_random_param_name(): self.rcestring})
 
     def performCheck(self, request_method):
         r = request_method()
@@ -253,7 +253,7 @@ class WAFW00F(waftoolsengine):
         self.knowledge['wafname'] = detected
         return detected
 
-def create_random_string(size=6, chars=string.ascii_lowercase):
+def create_random_param_name(size=8, chars=string.ascii_lowercase):
     return ''.join(random.choice(chars) for _ in range(size))
 
 def calclogginglevel(verbosity):
